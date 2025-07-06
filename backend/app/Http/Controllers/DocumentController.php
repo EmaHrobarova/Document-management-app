@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -80,5 +82,38 @@ class DocumentController extends Controller
         return response()->json(['message' => 'Document updated successfully.',
             'document' => $document,
         ]);
+    }
+
+    // GET a single document’s tags
+    public function tags(Request $request, $id)
+    {
+        $document = $request->user()->documents()->findOrFail($id);
+        return response()->json($document->tags);
+    }
+
+    // POST - Add tag to an existing document
+    public function addTag(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $document = $request->user()->documents()->findOrFail($id);
+
+        $tag = Tag::firstOrCreate(['name' => $request->input('name')]);
+
+        // Attach the tag to the document
+        $document->tags()->syncWithoutDetaching([$tag->id]);
+
+        return response()->json(['message' => 'Tag added successfully.']);
+    }
+
+    // DELETE - Remove tag from existing document
+    public function deleteTag(Request $request, $document_id, $tag_id)
+    {
+        $document = $request->user()->documents()->findOrFail($document_id);
+        $document->tags()->detach($tag_id);
+
+        return response()->json(['message' => 'Tag deleted successfully.']);
     }
 }

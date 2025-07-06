@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DocumentController;
@@ -15,6 +16,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/documents/download/{id}', [DocumentController::class, 'download']);
     Route::delete('/documents/delete/{id}', [DocumentController::class, 'delete']);
     Route::put('/documents/update/{id}', [DocumentController::class, 'update']);
+    Route::get('/documents/{id}/tags', [DocumentController::class, 'tags']);
+    Route::post('/documents/{id}/tags', [DocumentController::class, 'addTag']);
+    Route::delete('/documents/{document_id}/tags/{tag_id}', [DocumentController::class, 'deleteTag']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/tags', [TagController::class, 'index']);
+    Route::post('/tags', [TagController::class, 'store']);
 });
 
 require __DIR__.'/auth.php';
