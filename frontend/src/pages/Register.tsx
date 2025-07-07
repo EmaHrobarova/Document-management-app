@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { authService } from '../services/api';
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -7,15 +8,23 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [password_confirmation, setPassword_confirmation] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
         if (password !== password_confirmation) {
             alert('Passwords do not match!');
             return;
         }
-        
-        console.log('Submitted:', { name, email, password, password_confirmation });
+
+        try {
+            const response = await authService.register(name, email, password, password_confirmation);
+            console.log('Registration successful:', response);
+            navigate('/documents');
+        } catch (error: any) {
+            console.error('Registration failed:', error.message);
+        }
     };
 
     return (
@@ -90,7 +99,7 @@ const Register = () => {
                         Register
                     </button>
                 </form>
-
+                
                 <div className="mt-6 text-center">
                     <p className="text-gray-600">
                         Already have an account?{' '}

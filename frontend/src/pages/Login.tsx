@@ -1,14 +1,23 @@
 import React, {useState} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { authService } from '../services/api';
 
 const Login = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Submitted:', { email, password });
+        try {
+            const response = await authService.login(email, password);
+            console.log('Login successful:', response);
+            navigate('/documents');
+        } catch (error: any) {
+            console.error('Login failed:', error.message);
+        }
     };
 
     return (
@@ -51,7 +60,7 @@ const Login = () => {
                         Login
                     </button>
                 </form>
-
+                
                 <div className="mt-6 text-center">
                     <p className="text-gray-600">
                         Don't have an account?{' '}
