@@ -21,15 +21,16 @@ class DocumentController extends Controller
     {
         try {
             $validated_request = $request->validate([
-                'name' => 'required|string|max:255',
-                'file' => 'required|file|max:10240', // max 10MB
+                'display_name' => 'required|string|max:255',
+                'file' => 'required|file|max:10240',
             ]);
 
             $user = $request->user();
             $path = $request->file('file')->store('documents');
 
             $document = $user->documents()->create([
-                'name' => $validated_request['name'],
+                'display_name' => $validated_request['display_name'],
+                'name' => $request->file('file')->getClientOriginalName(),
                 'path' => $path,
             ]);
 

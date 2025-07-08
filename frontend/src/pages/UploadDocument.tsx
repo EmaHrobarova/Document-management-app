@@ -31,7 +31,7 @@ const UploadDocument = () => {
         
         setIsLoading(true);
         const formData = new FormData();
-        formData.append('name', name);
+        formData.append('display_name', name); // user-entered name as display_name
         formData.append('file', selectedFile, selectedFile.name);
 
         try {
