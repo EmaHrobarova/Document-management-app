@@ -3,7 +3,7 @@ import {Navigate, Route, Routes, useLocation} from "react-router-dom";
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Documents from './pages/Documents';
-import AddDocument from './pages/AddDocument';
+import UploadDocument from './pages/UploadDocument.tsx';
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import Navbar from "./components/Navbar.tsx";
 
@@ -23,9 +23,9 @@ function App() {
                   <ProtectedRoute>
                       <Documents />
                   </ProtectedRoute>} />
-              <Route path="/documents/add" element={
+              <Route path="/documents/upload" element={
                   <ProtectedRoute>
-                      <AddDocument />
+                      <UploadDocument />
                   </ProtectedRoute>} />
           </Routes>
       </>

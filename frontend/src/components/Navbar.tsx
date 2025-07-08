@@ -52,10 +52,10 @@ const Navbar = () => {
               <>
                 <li>
                   <Link
-                    to="/documents/add"
+                    to="/documents/upload"
                     className="block py-2 px-6 text-blue-500 text-xl font-bold hover:text-blue-800 transition"
                   >
-                    Add Document
+                    Upload Document
                   </Link>
                 </li>
                 <li>
