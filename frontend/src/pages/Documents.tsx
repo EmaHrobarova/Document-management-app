@@ -15,6 +15,7 @@ const Documents = () => {
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [docToDelete, setDocToDelete] = useState<Document | null>(null);
+    const [search, setSearch] = useState('');
 
     const fetchDocuments = async () => {
         try {
@@ -70,9 +71,25 @@ const Documents = () => {
         fetchDocuments();
     }, []);
 
+    const filteredDocuments = documents.filter(doc => {
+        if (search === '') return true; // Show all if search is empty
+        return Array.isArray(doc.tags)
+            ? doc.tags.some(tag => (tag.name ?? '').toLowerCase().includes(search.toLowerCase()))
+            : false;
+    });
+
     // template from https://flowbite.com/docs/components/tables/
     return (
         <>
+        <div className="m-4 flex justify-center items-center">
+            <input
+                type="text"
+                placeholder="Search by tag..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="px-4 py-2 border border-blue-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50 text-blue-900 placeholder-blue-300 transition w-full max-w-xs"
+            />
+        </div>
         <div className="relative overflow-x-auto m-4 shadow-md sm:rounded-xl">
             <table className="w-full text-sm text-left rtl:text-right text-blue-900">
                 <thead className="text-md text-blue-700 uppercase bg-blue-50">
@@ -95,7 +112,7 @@ const Documents = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {documents.map((doc) => (
+                {filteredDocuments.map((doc) => (
                     <tr key={doc.id} className="text-md bg-white border-b border-blue-100 hover:bg-blue-50">
                         <th scope="row" className="px-6 py-4 font-medium text-blue-900 whitespace-nowrap">
                             {doc.display_name}
