@@ -12,7 +12,7 @@ class DocumentController extends Controller
     // GET - List all documents
     public function index(Request $request)
     {
-        $documents = $request->user()->documents()->get();
+        $documents = $request->user()->documents()->with('tags')->get();
         return response()->json($documents);
     }
 
@@ -23,6 +23,8 @@ class DocumentController extends Controller
             $validated_request = $request->validate([
                 'display_name' => 'required|string|max:255',
                 'file' => 'required|file|max:10240',
+                'tags' => 'array',
+                'tags.*' => 'string|max:255',
             ]);
 
             $user = $request->user();
@@ -34,7 +36,15 @@ class DocumentController extends Controller
                 'path' => $path,
             ]);
 
-            return response()->json($document, 201);
+            $tags = $request->input('tags', []);
+            $tagsIds = [];
+            foreach ($tags as $tagName) {
+                $tag = Tag::firstOrCreate(['name' => $tagName]);
+                $tagsIds[] = $tag->id;
+            }
+            $document->tags()->syncWithoutDetaching($tagsIds);
+
+            return response()->json($document->load('tags'), 201);
 
         } catch (\Exception $e) {
             return response()->json([

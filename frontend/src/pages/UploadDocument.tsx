@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import api from "../services/api.ts";
 import { useNavigate } from 'react-router-dom';
+import CreatableSelect from 'react-select/creatable';
 
 // https://www.geeksforgeeks.org/reactjs/file-uploading-in-react-js/
 // https://www.bezkoder.com/react-typescript-file-upload/
@@ -9,7 +10,31 @@ const UploadDocument = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [tags, setTags] = useState<{label: string, value: string}[]>([]);
+    const [availableTags, setAvailableTags] = useState<{label: string, value: string}[]>([]);
     const navigate = useNavigate();
+
+    const handleTagChange = (selected: any) => {
+        setTags(selected || []);
+    };
+
+    const handleTagCreate = (inputValue: string) => {
+        const newTag = { label: inputValue, value: inputValue };
+        setAvailableTags(prev => [...prev, newTag]);
+        setTags(prev => [...prev, newTag]);
+    };
+
+    useEffect( () => {
+        const fetchTags = async () => {
+            try {
+                const response = await api.get('/tags');
+                setAvailableTags(response.data.map((tag: any) => ({ label: tag.name, value: tag.name })));
+            } catch (error) {
+                console.error('Error fetching tags:', error);
+            }
+        };
+        fetchTags();
+    }, []);
 
     const resetForm = () => {
         setName('');
@@ -33,6 +58,7 @@ const UploadDocument = () => {
         const formData = new FormData();
         formData.append('display_name', name); // user-entered name as display_name
         formData.append('file', selectedFile, selectedFile.name);
+        tags.forEach((tag, i) => formData.append(`tags[${i}]`, tag.value));
 
         try {
             await api.post('/documents', formData, {
@@ -78,6 +104,14 @@ const UploadDocument = () => {
                             required
                         />
                     </div>
+                    <CreatableSelect
+                        isMulti
+                        options={availableTags}
+                        value={tags}
+                        onChange={handleTagChange}
+                        onCreateOption={handleTagCreate}
+                        placeholder="Add or select tags"
+                    />
                     <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-blue-200 border-dashed rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100 transition mb-7">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                             <svg className="w-8 h-8 mb-4 text-blue-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
