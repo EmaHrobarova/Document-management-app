@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import api from "../services/api.ts";
+import CreatableSelect from "react-select/creatable";
 
 export type Document = {
     id: number;
@@ -16,6 +17,11 @@ const Documents = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [docToDelete, setDocToDelete] = useState<Document | null>(null);
     const [search, setSearch] = useState('');
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [docToEdit, setDocToEdit] = useState<Document | null>(null);
+    const [editName, setEditName] = useState('');
+    const [editTags, setEditTags] = useState<{label: string, value: string}[]>([]);
+    const [availableTags, setAvailableTags] = useState<{label: string, value: string}[]>([]);
 
     const fetchDocuments = async () => {
         try {
@@ -67,9 +73,47 @@ const Documents = () => {
         }
     };
 
+    const editDocument = async (id: number, display_name: string, tags: {label: string, value: string}[]) => {
+        try {
+            await api.put(`/documents/update/${id}`, {
+                display_name,
+                tags: tags.map(tag => tag.value),
+            });
+            fetchDocuments();
+        }
+        catch (error) {
+            console.error('Error uploading document:', error);
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchDocuments();
     }, []);
+
+    useEffect( () => {
+        const fetchTags = async () => {
+            try {
+                const response = await api.get('/tags');
+                setAvailableTags(response.data.map((tag: any) => ({ label: tag.name, value: tag.name })));
+            } catch (error) {
+                console.error('Error fetching tags:', error);
+            }
+        };
+        fetchTags();
+    }, []);
+
+    const handleTagChange = (selected: any) => {
+        setEditTags(selected || []);
+    };
+
+    const handleTagCreate = (inputValue: string) => {
+        const newTag = { label: inputValue, value: inputValue };
+        setAvailableTags(prev => [...prev, newTag]);
+        setEditTags(prev => [...prev, newTag]);
+    };
 
     const filteredDocuments = documents.filter(doc => {
         if (search === '') return true; // Show all if search is empty
@@ -141,6 +185,23 @@ const Documents = () => {
                         <td className="px-6 py-4 text-right">
                             <button
                                 onClick={() => {
+                                    setDocToEdit(doc);
+                                    setEditName(doc.display_name);
+                                    setEditTags(
+                                        Array.isArray(doc.tags)
+                                            ? doc.tags.map((tag: any) => ({ label: tag.name, value: tag.name }))
+                                            : []
+                                    );
+                                    setShowEditModal(true);
+                                }}
+                                className="font-medium text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-1 rounded border border-blue-400 transition"
+                            >
+                                Edit
+                            </button>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                            <button
+                                onClick={() => {
                                     setDocToDelete(doc);
                                     setShowDeleteModal(true);
                                 }}
@@ -185,6 +246,59 @@ const Documents = () => {
               </div>
             </div>
           </div>
+        )}
+        {showEditModal && docToEdit && (
+            <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-blue-900 bg-opacity-40">
+                <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative border border-blue-200">
+                    <div className="my-8 text-center">
+                        <h4 className="text-xl text-blue-700 font-semibold">Edit Document</h4>
+                    </div>
+                   <form onSubmit={async (e) => {
+                       e.preventDefault();
+                       await editDocument(docToEdit.id, editName, editTags);
+                       setShowEditModal(false);
+                       setDocToEdit(null);
+                   }}
+                   >
+                   <div className="mb-6">
+                       <label htmlFor="name" className="block mb-2 text-sm font-semibold text-blue-700">Document Name</label>
+                       <input
+                           type="text"
+                           value={editName}
+                           onChange={e => setEditName(e.target.value)}
+                           className="mt-1 block w-full px-4 py-2 border border-blue-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 bg-blue-50 text-blue-900 placeholder-blue-300 transition"
+                           placeholder="Enter document name"
+                           required
+                       />
+                   </div>
+                   <CreatableSelect
+                       isMulti
+                       options={availableTags}
+                       value={editTags}
+                       onChange={handleTagChange}
+                       onCreateOption={handleTagCreate}
+                       placeholder="Add or select tags"
+                       className="mb-4"
+
+                   />
+                    <div className="flex flex-col space-y-3">
+                        <button
+                            type="submit"
+                            className="bg-blue-600 hover:bg-blue-700 text-white text-lg py-2 px-4 rounded-2xl font-bold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition flex justify-center items-center"
+                        >
+                            Save
+                        </button>
+                        <button
+                            type="button"
+                            className="text-blue-900 bg-blue-100 hover:bg-blue-200 active:bg-blue-100 text-lg py-2 px-4 rounded-2xl font-bold shadow border border-blue-200"
+                            onClick={() => setShowEditModal(false)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                   </form>
+                </div>
+            </div>
         )}
         </>
     );

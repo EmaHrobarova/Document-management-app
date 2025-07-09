@@ -82,16 +82,26 @@ class DocumentController extends Controller
     // rename for now, try to replace file later
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $validated_request = $request->validate([
+            'display_name' => 'required|string|max:255',
+            'tags' => 'array',
+            'tags.*' => 'string|max:255',
         ]);
 
         $document = $request->user()->documents()->findOrFail($id);
-        $document->name = $request->input('name');
+        $document->display_name = $validated_request['display_name'];
         $document->save();
 
+        $tags = $request->input('tags', []);
+        $tagsIds = [];
+        foreach ($tags as $tagName) {
+            $tag = Tag::firstOrCreate(['name' => $tagName]);
+            $tagsIds[] = $tag->id;
+        }
+        $document->tags()->syncWithoutDetaching($tagsIds);
+
         return response()->json(['message' => 'Document updated successfully.',
-            'document' => $document,
+            'document' => $document->load('tags'),
         ]);
     }
 
