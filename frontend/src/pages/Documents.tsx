@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import api from "../services/api.ts";
 import CreatableSelect from "react-select/creatable";
+import ReactPaginate from 'react-paginate'; //https://www.npmjs.com/package/react-paginate
 
 export type Document = {
     id: number;
@@ -22,7 +23,12 @@ const Documents = () => {
     const [editName, setEditName] = useState('');
     const [editTags, setEditTags] = useState<{label: string, value: string}[]>([]);
     const [availableTags, setAvailableTags] = useState<{label: string, value: string}[]>([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 5;
 
+    const handlePageClick = (event: { selected: number }) => {
+        setCurrentPage(event.selected);
+    };
     const fetchDocuments = async () => {
         try {
             const response = await api.get('/documents');
@@ -115,12 +121,23 @@ const Documents = () => {
         setEditTags(prev => [...prev, newTag]);
     };
 
+    // Reset to first page when search changes
+    useEffect(() => {
+        setCurrentPage(0);
+    }, [search]);
+
     const filteredDocuments = documents.filter(doc => {
         if (search === '') return true; // Show all if search is empty
         return Array.isArray(doc.tags)
             ? doc.tags.some(tag => (tag.name ?? '').toLowerCase().includes(search.toLowerCase()))
             : false;
     });
+
+    const pageCount = Math.ceil(filteredDocuments.length / itemsPerPage);
+    const currentItems = filteredDocuments.slice(
+        currentPage * itemsPerPage,
+        (currentPage + 1) * itemsPerPage
+    );
 
     // template from https://flowbite.com/docs/components/tables/
     return (
@@ -156,7 +173,7 @@ const Documents = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {filteredDocuments.map((doc) => (
+                {currentItems.map((doc) => (
                     <tr key={doc.id} className="text-md bg-white border-b border-blue-100 hover:bg-blue-50">
                         <th scope="row" className="px-6 py-4 font-medium text-blue-900 whitespace-nowrap">
                             {doc.display_name}
@@ -214,6 +231,21 @@ const Documents = () => {
                 ))}
                 </tbody>
             </table>
+            <ReactPaginate
+                breakLabel="..."
+                nextLabel="next >"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={5}
+                pageCount={pageCount}
+                previousLabel="< previous"
+                renderOnZeroPageCount={null}
+                containerClassName="flex justify-center my-4 space-x-1"
+                pageClassName="px-3 py-2 text-blue-600 hover:bg-blue-100 rounded-lg transition"
+                activeClassName="bg-blue-600 text-white font-semibold"
+                previousClassName="px-3 py-2 text-blue-600 hover:bg-blue-100 rounded-lg transition"
+                nextClassName="px-3 py-2 text-blue-600 hover:bg-blue-100 rounded-lg transition"
+                disabledClassName="text-gray-400 cursor-not-allowed"
+            />
         </div>
         {showDeleteModal && docToDelete && (
           <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-blue-900 bg-opacity-40">
