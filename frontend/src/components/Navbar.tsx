@@ -15,11 +15,18 @@ const Navbar = () => {
 
   // template from https://flowbite.com/docs/components/navbar/
   return (
-      <nav className="bg-gradient-to-br from-blue-50 to-blue-100 border-b border-blue-100 shadow-md rounded-b-2xl font-sans">
+      <nav className="bg-blue-500 text-white hover:text-blue-100 border-b border-blue-100 shadow-md rounded-2xl font-sans">
         <div className="flex flex-wrap items-center justify-between p-4">
-          <span className="self-center text-2xl font-extrabold text-blue-600 drop-shadow-sm">
-            Document App
-          </span>
+            <div className="flex items-center space-x-6">
+              <span className="self-center text-2xl font-extrabold drop-shadow-sm">
+                Document App
+              </span>
+                {isLoggedIn && (
+                    <span className="text-blue-100 text-lg font-bold">
+                  Hi, {user?.name}
+                </span>
+                )}
+            </div>
         <button
           type="button"
           className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
@@ -43,7 +50,7 @@ const Navbar = () => {
             <li>
               <Link
                 to="/documents"
-                className="block py-2 px-6 text-blue-500 text-xl font-bold hover:text-blue-800 transition"
+                className="block py-2 px-6 text-xl font-bold hover:text-blue-100 transition"
               >
                 Documents
               </Link>
@@ -53,7 +60,7 @@ const Navbar = () => {
                 <li>
                   <Link
                     to="/documents/upload"
-                    className="block py-2 px-6 text-blue-500 text-xl font-bold hover:text-blue-800 transition"
+                    className="block py-2 px-6 text-xl font-bold hover:text-blue-100 transition"
                   >
                     Upload Document
                   </Link>
@@ -61,15 +68,10 @@ const Navbar = () => {
                 <li>
                   <button
                     onClick={handleLogout}
-                    className="block py-2 px-6 text-blue-500 text-xl font-bold hover:text-blue-800 transition border-none focus:outline-none focus:ring-0"
+                    className="block py-2 px-6 text-xl font-bold hover:text-blue-100 transition border-none focus:outline-none focus:ring-0"
                   >
                     Logout
                   </button>
-                </li>
-                <li>
-                  <span className="block py-2 px-6 text-blue-600 text-xl font-bold">
-                    Hi, {user?.name}
-                  </span>
                 </li>
               </>
             )}

@@ -148,14 +148,14 @@ const Documents = () => {
                 placeholder="Search by tag..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="px-4 py-2 border border-blue-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50 text-blue-900 placeholder-blue-300 transition w-full max-w-xs"
+                className="px-4 py-2 border-2 border-blue-500 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200 bg-blue-50 text-blue-900 font-semibold placeholder-blue-300 transition w-full max-w-xs"
             />
         </div>
-        <div className="relative overflow-x-auto m-4 shadow-md sm:rounded-xl">
-            <table className="w-full text-sm text-left rtl:text-right text-blue-900">
-                <thead className="text-md text-blue-700 uppercase bg-blue-50">
+        <div className="relative overflow-x-auto m-4 shadow-md rounded-2xl">
+            <table className="my-2 w-full text-sm text-left font-sans rtl:text-right text-blue-800 rounded-2xl overflow-hidden">
+                <thead className="bg-blue-100 text-md text-blue-500 uppercase border-b border-blue-100 shadow-md rounded-2xl">
                 <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 rounded-tl-xl">
                         Document name
                     </th>
                     <th scope="col" className="px-6 py-3">
@@ -167,39 +167,39 @@ const Documents = () => {
                     <th scope="col" className="px-6 py-3">
                         Updated at
                     </th>
-                    <th scope="col" className="px-6 py-3">
-                        <span className="sr-only">Download</span>
-                    </th>
+                    <th scope="col" className="px-6 py-3"><span className="sr-only">Download</span></th>
+                    <th scope="col" className="px-6 py-3"><span className="sr-only">Edit</span></th>
+                    <th scope="col" className="px-6 py-3"><span className="sr-only rounded-tr-xl">Delete</span></th>
                 </tr>
                 </thead>
                 <tbody>
                 {currentItems.map((doc) => (
-                    <tr key={doc.id} className="text-md bg-white border-b border-blue-100 hover:bg-blue-50">
-                        <th scope="row" className="px-6 py-4 font-medium text-blue-900 whitespace-nowrap">
+                    <tr key={doc.id} className="text-md bg-white text-blue-900 border-b border-blue-100 hover:bg-blue-50">
+                        <th scope="row" className="px-6 py-4 font-bold whitespace-nowrap">
                             {doc.display_name}
                         </th>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-3 font-medium">
                             {Array.isArray(doc.tags) ? doc.tags.map(tag => tag.name).join(', ') : doc.tags}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-3 font-medium">
                             {new Date(doc.created_at).toLocaleString()}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-3 font-medium">
                             {new Date(doc.updated_at).toLocaleString()}
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-6 py-3">
                            <button
                                onClick={() => {
                                    const extension = doc.name.split('.').pop();
                                    const downloadName = doc.display_name + (extension ? '.' + extension : '');
                                    downloadDocument(doc.id, downloadName);
                                }}
-                               className="font-medium text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-1 rounded border border-blue-400 transition"
+                               className="font-medium bg-blue-500 text-white border border-blue-400 hover:bg-white hover:text-blue-600 hover:border-blue-600 focus:outline-none px-4 py-1 rounded-2xl transition"
                             >
                                Download
                             </button>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-6 py-3">
                             <button
                                 onClick={() => {
                                     setDocToEdit(doc);
@@ -211,18 +211,18 @@ const Documents = () => {
                                     );
                                     setShowEditModal(true);
                                 }}
-                                className="font-medium text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-1 rounded border border-blue-400 transition"
+                                className="font-medium bg-blue-500 text-white border border-blue-400 hover:bg-white hover:text-blue-600 hover:border-blue-600 focus:outline-none px-4 py-1 rounded-2xl transition"
                             >
                                 Edit
                             </button>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-6 py-4">
                             <button
                                 onClick={() => {
                                     setDocToDelete(doc);
                                     setShowDeleteModal(true);
                                 }}
-                                className="font-medium text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-1 rounded border border-blue-400 transition"
+                                className="font-medium bg-blue-500 text-white border border-blue-400 hover:bg-white hover:text-blue-600 hover:border-blue-600 focus:outline-none px-4 py-1 rounded-2xl transition"
                             >
                                 Delete
                             </button>
@@ -239,11 +239,12 @@ const Documents = () => {
                 pageCount={pageCount}
                 previousLabel="< previous"
                 renderOnZeroPageCount={null}
-                containerClassName="flex justify-center my-4 space-x-1"
-                pageClassName="px-3 py-2 text-blue-600 hover:bg-blue-100 rounded-lg transition"
+                forcePage={currentPage}
+                containerClassName="flex justify-center my-2 py-4 space-x-1"
+                pageClassName="px-3 py-2 text-blue-600 hover:bg-blue-100 hover:text-blue-500 rounded-2xl transition"
                 activeClassName="bg-blue-600 text-white font-semibold"
-                previousClassName="px-3 py-2 text-blue-600 hover:bg-blue-100 rounded-lg transition"
-                nextClassName="px-3 py-2 text-blue-600 hover:bg-blue-100 rounded-lg transition"
+                previousClassName="px-3 py-2 text-blue-600 hover:bg-blue-100 rounded-2xl transition"
+                nextClassName="px-3 py-2 text-blue-600 hover:bg-blue-100 rounded-2xl transition"
                 disabledClassName="text-gray-400 cursor-not-allowed"
             />
         </div>
@@ -251,7 +252,7 @@ const Documents = () => {
           <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-blue-900 bg-opacity-40">
             <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative border border-blue-200">
               <div className="my-8 text-center">
-                <h4 className="text-xl text-blue-700 font-semibold">Are you sure you want to delete this document?</h4>
+                <h4 className="text-4xl font-extrabold mb-8 text-center text-blue-500 drop-shadow-sm">Are you sure you want to delete this document?</h4>
                 <p className="text-blue-600 text-md font-semibold mt-4">
                   This action is permanent.
                 </p>
@@ -259,7 +260,7 @@ const Documents = () => {
               <div className="flex flex-col space-y-3">
                 <button
                   type="button"
-                  className="bg-blue-600 hover:bg-blue-700 text-white text-lg py-2 px-4 rounded-2xl font-bold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition flex justify-center items-center"
+                  className="bg-blue-500 hover:bg-blue-700 text-white text-lg py-2 px-4 rounded-2xl font-bold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition flex justify-center items-center"
                   onClick={async () => {
                     await deleteDocument(docToDelete.id);
                     setShowDeleteModal(false);
@@ -270,7 +271,7 @@ const Documents = () => {
                 </button>
                 <button
                   type="button"
-                  className="text-blue-900 bg-blue-100 hover:bg-blue-200 active:bg-blue-100 text-lg py-2 px-4 rounded-2xl font-bold shadow border border-blue-200"
+                  className="text-blue-900 bg-blue-100 hover:bg-blue-200 active:bg-blue-100 text-lg py-2 px-4 rounded-2xl font-bold shadow focus:outline-none border border-blue-200"
                   onClick={() => setShowDeleteModal(false)}
                 >
                   Cancel
@@ -283,7 +284,7 @@ const Documents = () => {
             <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-blue-900 bg-opacity-40">
                 <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative border border-blue-200">
                     <div className="my-8 text-center">
-                        <h4 className="text-xl text-blue-700 font-semibold">Edit Document</h4>
+                        <h4 className="text-4xl font-extrabold mb-10 text-center text-blue-500 drop-shadow-sm">Edit Document</h4>
                     </div>
                    <form onSubmit={async (e) => {
                        e.preventDefault();
@@ -293,7 +294,6 @@ const Documents = () => {
                    }}
                    >
                    <div className="mb-6">
-                       <label htmlFor="name" className="block mb-2 text-sm font-semibold text-blue-700">Document Name</label>
                        <input
                            type="text"
                            value={editName}
@@ -303,26 +303,45 @@ const Documents = () => {
                            required
                        />
                    </div>
-                   <CreatableSelect
-                       isMulti
-                       options={availableTags}
-                       value={editTags}
-                       onChange={handleTagChange}
-                       onCreateOption={handleTagCreate}
-                       placeholder="Add or select tags"
-                       className="mb-4"
-
-                   />
+                   <div className="mb-6">
+                       <CreatableSelect
+                           isMulti
+                           options={availableTags}
+                           value={editTags}
+                           onChange={handleTagChange}
+                           onCreateOption={handleTagCreate}
+                           placeholder="Add or select tags"
+                           styles={{
+                               control: (base, state) => ({
+                                   ...base,
+                                   backgroundColor: '#eff6ff',
+                                   borderColor: state.isFocused ? '#3B82F6' : '#BFDBFE',
+                                   boxShadow: state.isFocused ? '0 0 0 2px rgba(59,130,246,0.5)' : 'none',
+                                   textAlign: 'left',
+                               }),
+                               placeholder: (base) => ({
+                                   ...base,
+                                   color: '#93c5fd', // Tailwind blue-300
+                                   textAlign: 'left',
+                               }),
+                               input: (base) => ({
+                                   ...base,
+                                   color: '#1e40af', // Tailwind blue-900
+                                   textAlign: 'left',
+                               }),
+                           }}
+                       />
+                   </div>
                     <div className="flex flex-col space-y-3">
                         <button
                             type="submit"
-                            className="bg-blue-600 hover:bg-blue-700 text-white text-lg py-2 px-4 rounded-2xl font-bold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition flex justify-center items-center"
+                            className="bg-blue-500 hover:bg-blue-700 text-white text-lg py-2 px-4 rounded-2xl font-bold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition flex justify-center items-center"
                         >
                             Save
                         </button>
                         <button
                             type="button"
-                            className="text-blue-900 bg-blue-100 hover:bg-blue-200 active:bg-blue-100 text-lg py-2 px-4 rounded-2xl font-bold shadow border border-blue-200"
+                            className="text-blue-700 bg-blue-100 hover:bg-blue-200 active:bg-blue-100 text-lg py-2 px-4 rounded-2xl font-bold shadow focus:outline-none border border-blue-200"
                             onClick={() => setShowEditModal(false)}
                         >
                             Cancel

@@ -38,6 +38,7 @@ const UploadDocument = () => {
 
     const resetForm = () => {
         setName('');
+        setTags([]);
         setSelectedFile(null);
         setIsSuccess(false);
     };
@@ -79,21 +80,20 @@ const UploadDocument = () => {
     return (
         <div className="flex items-center justify-center min-h-screen">
             {isSuccess ? (
-                <div className="bg-blue-100 border border-blue-400 text-blue-700 px-8 py-6 rounded-lg shadow-md w-full max-w-md text-center">
-                    <h2 className="text-3xl font-bold mb-6">Upload Successful!</h2>
-                    <p className="mb-4 text-lg">Your document has been uploaded.</p>
+                <div className="bg-blue-100 border border-blue-400 px-8 py-8 rounded-lg shadow-md w-full max-w-md text-center">
+                    <h2 className="text-4xl font-extrabold mb-8 text-center text-blue-500 drop-shadow-sm">Upload Successful!</h2>
+                    <p className="mb-4 text-lg text-blue-600">Your document has been uploaded.</p>
                     <button
                         onClick={resetForm}
-                        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-2xl font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition"
+                        className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-2xl font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition"
                     >
                         Upload another file
                     </button>
                 </div>
             ) : (
                 <form onSubmit={handleSubmit} className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-blue-100">
-                    <h1 className="text-3xl font-extrabold mb-8 text-center text-blue-700 drop-shadow-sm">Add Document</h1>
-                    <div className="mb-6">
-                        <label htmlFor="name" className="block mb-2 text-sm font-semibold text-blue-700">Document Name</label>
+                    <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-500 drop-shadow-sm">Add Document</h1>
+                    <div className="mb-6 text-left">
                         <input
                             type="text"
                             id="name"
@@ -111,6 +111,26 @@ const UploadDocument = () => {
                         onChange={handleTagChange}
                         onCreateOption={handleTagCreate}
                         placeholder="Add or select tags"
+                        className="mb-4"
+                        styles={{
+                            control: (base, state) => ({
+                                ...base,
+                                backgroundColor: '#eff6ff',
+                                borderColor: state.isFocused ? '#3B82F6' : '#BFDBFE',
+                                boxShadow: state.isFocused ? '0 0 0 2px rgba(59,130,246,0.5)' : 'none',
+                                textAlign: 'left',
+                            }),
+                            placeholder: (base) => ({
+                                ...base,
+                                color: '#93c5fd', // Tailwind blue-300
+                                textAlign: 'left',
+                            }),
+                            input: (base) => ({
+                                ...base,
+                                color: '#1e40af', // Tailwind blue-900
+                                textAlign: 'left',
+                            }),
+                        }}
                     />
                     <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-blue-200 border-dashed rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100 transition mb-7">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -130,7 +150,7 @@ const UploadDocument = () => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className={`w-full ${isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} text-white text-lg py-2 px-4 rounded-2xl font-bold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition flex justify-center items-center`}
+                        className={`w-full ${isLoading ? 'bg-blue-400' : 'bg-blue-500 hover:bg-blue-700'} text-white text-lg py-2 px-4 rounded-2xl font-bold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition flex justify-center items-center`}
                     >
                         {isLoading ? (
                             <>
