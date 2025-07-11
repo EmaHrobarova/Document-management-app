@@ -79,7 +79,7 @@ class DocumentController extends Controller
     }
 
     // PUT - Update (rename) a file
-    // rename for now, try to replace file later
+    // only rename for now
     public function update(Request $request, $id)
     {
         $validated_request = $request->validate([
@@ -98,9 +98,12 @@ class DocumentController extends Controller
             $tag = Tag::firstOrCreate(['name' => $tagName]);
             $tagsIds[] = $tag->id;
         }
-        $document->tags()->syncWithoutDetaching($tagsIds);
+        $document->tags()->sync($tagsIds);
 
-        return response()->json(['message' => 'Document updated successfully.',
+        $document->touch();
+
+        return response()->json([
+            'message' => 'Document updated successfully.',
             'document' => $document->load('tags'),
         ]);
     }
