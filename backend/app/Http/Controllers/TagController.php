@@ -26,4 +26,18 @@ class TagController extends Controller
 
             return response()->json($tag, 201);
     }
+
+    // DELETE - Delete a tag
+    public function destroy($id)
+    {
+        $tag = Tag::find($id);
+        
+        if (!$tag) {
+            return response()->json(['message' => 'Tag not found'], 404);
+        }
+
+        $tag->delete();
+        
+        return response()->json(['message' => 'Tag deleted successfully'], 200);
+    }
 }

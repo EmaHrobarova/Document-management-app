@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tags', [TagController::class, 'index']);
     Route::post('/tags', [TagController::class, 'store']);
+    Route::delete('/tags/{id}', [TagController::class, 'destroy']);
 });
 
 require __DIR__.'/auth.php';
