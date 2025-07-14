@@ -46,11 +46,11 @@ const Navbar = () => {
           </svg>
         </button>
         <div className={`${menuOpen ? '' : 'hidden'} w-full md:block md:w-auto`} id="navbar-default">
-          <ul className="flex flex-col md:flex-row md:space-x-6 p-4 md:p-0 mt-4 md:mt-0">
+          <ul className="flex flex-col items-center justify-center space-y-4 md:flex-row md:space-x-6 md:space-y-0 p-4 md:p-0 mt-4 md:mt-0">
             <li>
               <Link
                 to="/documents"
-                className="block py-2 px-6 text-xl font-bold hover:text-blue-100 transition"
+                className="w-full text-center block py-2 px-6 text-xl font-bold hover:text-blue-100 transition"
               >
                 Documents
               </Link>
@@ -60,7 +60,7 @@ const Navbar = () => {
                 <li>
                   <Link
                     to="/documents/upload"
-                    className="block py-2 px-6 text-xl font-bold hover:text-blue-100 transition"
+                    className="w-full text-center block py-2 px-6 text-xl font-bold hover:text-blue-100 transition"
                   >
                     Upload Document
                   </Link>
@@ -68,7 +68,7 @@ const Navbar = () => {
                 <li>
                   <button
                     onClick={handleLogout}
-                    className="block py-2 px-6 text-xl font-bold hover:text-blue-100 transition border-none focus:outline-none focus:ring-0"
+                    className="w-full text-center block py-2 px-6 text-xl font-bold hover:text-blue-100 transition border-none focus:outline-none focus:ring-0"
                   >
                     Logout
                   </button>
@@ -80,7 +80,7 @@ const Navbar = () => {
                 <li>
                   <Link
                     to="/login"
-                    className="block py-2 px-6 text-blue-500 text-lg font-bold hover:text-blue-800 transition"
+                    className="w-full text-center block py-2 px-6 text-blue-500 text-lg font-bold hover:text-blue-800 transition"
                   >
                     Login
                   </Link>
@@ -88,7 +88,7 @@ const Navbar = () => {
                 <li>
                   <Link
                     to="/register"
-                    className="block py-2 px-6 text-blue-500 text-lg font-bold hover:text-blue-800 transition"
+                    className="w-full text-center block py-2 px-6 text-blue-500 text-lg font-bold hover:text-blue-800 transition"
                   >
                     Register
                   </Link>
